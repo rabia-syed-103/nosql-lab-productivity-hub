@@ -110,7 +110,15 @@ async function listUserProjects(db, ownerId) {
  * Hint: insertOne again — just remember to add the defaults yourself.
  */
 async function createProject(db, projectData) {
-  // TODO: implement
+  const {ownerId,name,description}=projectData;
+  const res= await db.collection('projects').insertOne({
+    ownerId: ownerId,
+    name: name,
+    description: description || '',
+    archived: false,
+    createdAt: new Date()
+    });
+    return {insertedId: res.insertedId};
   throw new Error('createProject not implemented');
 }
 
@@ -130,7 +138,11 @@ async function createProject(db, projectData) {
  * Hint: updateOne with the $set operator.
  */
 async function archiveProject(db, projectId) {
-  // TODO: implement
+  const res= await db.collection('projects').updateOne(
+    { _id: projectId },
+    { $set: { archived: true } }
+  );
+  return { matchedCount: res.matchedCount, modifiedCount: res.modifiedCount };
   throw new Error('archiveProject not implemented');
 }
 
