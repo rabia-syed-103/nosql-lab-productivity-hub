@@ -90,4 +90,4 @@ For each relationship, state whether you embedded or referenced, and **why** (on
 
 Name one field that exists on **some** documents but not **all** in the same collection. Explain why this is acceptable (or even useful) in MongoDB.
 
-> _Your answer here._
+> The `dueDate` field exists on some task documents but not all. Tasks that have a deadline include it; casual or undated tasks omit it entirely. MongoDB imposes no penalty for the missing field — queries that filter by `dueDate` simply skip documents where it is absent. This would require a nullable column and special handling in a relational schema, but in MongoDB it is natural.

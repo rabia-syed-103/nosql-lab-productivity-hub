@@ -164,7 +164,14 @@ async function archiveProject(db, projectId) {
  *       the caller passed one. Then chain .sort({ priority: -1, createdAt: -1 }).
  */
 async function listProjectTasks(db, projectId, status) {
-  // TODO: implement
+  const filter = { projectId: projectId };
+  if (status) {
+    filter.status = status;
+  }  
+  return await db.collection('tasks')
+    .find(filter)
+    .sort({ priority: -1, createdAt: -1 })
+    .toArray();   
   throw new Error('listProjectTasks not implemented');
 }
 
@@ -190,7 +197,18 @@ async function listProjectTasks(db, projectId, status) {
  * Hint: insertOne. Apply defaults for any missing optional fields.
  */
 async function createTask(db, taskData) {
-  // TODO: implement
+  const { ownerId, projectId, title, priority = 1, tags = [], subtasks = [] } = taskData;
+  const res = await db.collection('tasks').insertOne({
+    ownerId,
+    projectId,
+    title,
+    priority,
+    tags,
+    subtasks,
+    status: "todo",
+    createdAt: new Date()
+  });
+  return { insertedId: res.insertedId };
   throw new Error('createTask not implemented');
 }
 
@@ -207,7 +225,11 @@ async function createTask(db, taskData) {
  * Hint: updateOne + $set.
  */
 async function updateTaskStatus(db, taskId, newStatus) {
-  // TODO: implement
+  const res = await db.collection('tasks').updateOne(
+    { _id : taskId },
+    { $set: { status: newStatus } }
+  );
+  return { matchedCount: res.matchedCount, modifiedCount: res.modifiedCount };
   throw new Error('updateTaskStatus not implemented');
 }
 
@@ -228,7 +250,7 @@ async function updateTaskStatus(db, taskId, newStatus) {
  * Hint: which array operator silently skips duplicates? It is NOT $push.
  */
 async function addTaskTag(db, taskId, tag) {
-  // TODO: implement
+  
   throw new Error('addTaskTag not implemented');
 }
 
