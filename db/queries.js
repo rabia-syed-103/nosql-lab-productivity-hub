@@ -250,7 +250,11 @@ async function updateTaskStatus(db, taskId, newStatus) {
  * Hint: which array operator silently skips duplicates? It is NOT $push.
  */
 async function addTaskTag(db, taskId, tag) {
-  
+  const res = await db.collection('tasks').updateOne(
+    { _id: taskId },
+    { $addToSet: { tags: tag } }
+  );
+  return { matchedCount: res.matchedCount, modifiedCount: res.modifiedCount };  
   throw new Error('addTaskTag not implemented');
 }
 
@@ -271,7 +275,11 @@ async function addTaskTag(db, taskId, tag) {
  * Hint: $pull.
  */
 async function removeTaskTag(db, taskId, tag) {
-  // TODO: implement
+  const res = await db.collection('tasks').updateOne(
+    { _id: taskId },
+    { $pull: { tags: tag } }
+  );
+  return { matchedCount: res.matchedCount, modifiedCount: res.modifiedCount };
   throw new Error('removeTaskTag not implemented');
 }
 
